@@ -6,3 +6,8 @@ const usuarios = [
 ];
 
 export const obtenerUsuarios = () => usuarios;
+
+export const eliminarUsuario = (id) => {    
+    console.log(`Se eliminara el usuario con id ${id}`);
+    usuarios.splice(usuarios.findIndex(u => u.id === id), 1);   
+}
