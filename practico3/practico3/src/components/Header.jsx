@@ -1,5 +1,5 @@
 import Logo from "./Logo";
-import style from   "."
+
 function Header(){
     return (
         <nav style={{display:"flex", backgroundColor:"cyan"}}>
