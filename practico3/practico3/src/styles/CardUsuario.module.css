@@ -1,0 +1,14 @@
+.card{
+    border: 1px solid brown;
+    padding: 10px;
+    border-radius: 12px;
+    background: cyan;
+}
+
+.boton{ 
+    background: rgb(234, 226, 223);
+}
+
+.boton:hover {
+    background: cadetblue;
+}

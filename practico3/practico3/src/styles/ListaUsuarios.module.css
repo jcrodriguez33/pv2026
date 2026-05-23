@@ -1,0 +1,8 @@
+.lista{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    border: 2px dashed brown;
+    padding: 10px;
+    border-radius: 12px;
+}
