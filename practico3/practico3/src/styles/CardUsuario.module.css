@@ -1,12 +1,15 @@
 .card{
-    border: 1px solid brown;
+    flex-direction: row;
+    border:1px solid #ca2424;
     padding: 10px;
     border-radius: 12px;
     background: cyan;
+    width: 25%;
 }
 
 .boton{ 
     background: rgb(234, 226, 223);
+    
 }
 
 .boton:hover {
