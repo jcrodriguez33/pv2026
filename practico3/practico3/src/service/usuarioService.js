@@ -7,8 +7,8 @@ const usuarios = [
     {id:105, nombre: "Lorenzo Ramos", fechaNacimiento:"2001-02-21" },
     {id:106, nombre: "Liliana Cruz", fechaNacimiento:"2001-02-21" },
     {id:107, nombre: "Agustina Lamas", fechaNacimiento:"2001-02-21" },
-    {id:108, nombre: "Cristan Flores", fechaNacimiento:"2001-02-21" },
-    {id:109, nombre: "Dany", fechaNacimiento:"2001-02-21" },
+    /* {id:108, nombre: "Cristan Flores", fechaNacimiento:"2001-02-21" },
+    {id:109, nombre: "Dany", fechaNacimiento:"2001-02-21" }, */
 
 ];
 
@@ -16,5 +16,5 @@ export const obtenerUsuarios = () => usuarios;
 
 export const eliminarUsuario = (id) => {    
     console.log(`Se eliminara el usuario con id ${id}`);
-    usuarios.splice(usuarios.findIndex(u => u.id === id), 1);   
+    usuarios.splice(usuarios.findIndex(u => u.id === id), 1);       
 }
