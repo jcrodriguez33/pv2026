@@ -6,11 +6,14 @@ import { obtenerUsuario } from "../service/usuarioService";
 //Inicializo el fomulario  para dar de alta un usuario.
 const initialForm = {
     id: 0,
-    nombre: "",
-    fechaNacimiento: ""
+    name: "",
+    email: "",
+    password:"",
+    role:"admin",
+    avatar: "https://i.imgur.com/yhW6Yw1.jpg" 
 };
 
-const FormUsuario = ({ agregarUsuario }) => {
+const FormUsuario = ({ guardar }) => {
     const [form, setForm] = useState(initialForm);
     let { id } = useParams();
     const navigate = useNavigate();
@@ -18,25 +21,38 @@ const FormUsuario = ({ agregarUsuario }) => {
     useEffect(() => {
         //Si id es distinto de null obtenemos el usuario  con es id, caso contrario  inicializamos el formulario por que se trata de un alta.
         if (id) {
-            const usuario = obtenerUsuario(Number(id))
-            setForm(usuario);
+            console.log(id);
+            fetch('https://api.escuelajs.co/api/v1/users/' + id)
+                .then((res) => {
+                    if (!res.ok) throw new Error('Error al cargar el usuario');
+                    return res.json();
+                })
+                .then((data) => {
+                    console.log('Usuario encontrado:', data);
+                    setForm(data);
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
+
         } else {
             setForm(initialForm);
         }
     }, [id]);
 
-    const agregar = (e) => {
-        e.preventDefault();      
+    const handleSubmit = (e) => {
+        e.preventDefault();
         //Aqui se deberia validar los input's 
-        agregarUsuario(form.nombre, form.fechaNacimiento);
+        guardar(form);
         setForm(initialForm);
         navigate("/", { replace: true });
     };
 
     return (
-        <form className={styles.formulario} onSubmit={agregar}>
-            <input type="text" placeholder="Ingrese nombre" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })}></input>
-            <input type="date" placeholder="Ingrese fecha Nac." value={form.fechaNacimiento} onChange={(e) => setForm({ ...form, fechaNacimiento: e.target.value })}></input>
+        <form className={styles.formulario} onSubmit={handleSubmit}>
+            <input type="text" placeholder="Ingrese nombre" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}></input>
+            <input type="text" placeholder="Ingrese email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}></input>
+            <input type="password" placeholder="Ingrese password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}></input>            
             <button type="submit">Guardar</button>
         </form>
     );

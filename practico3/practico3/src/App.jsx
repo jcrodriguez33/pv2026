@@ -9,7 +9,9 @@ import { useEffect, useRef, useState } from 'react';
 import ListaUsuarios from './components/ListaUsuarios';
 import Titulo from './components/Titulo';
 import FormUsuario from './components/FormUsuario';
-import { Link, Routes, Route} from 'react-router-dom'
+import { Link, Routes, Route } from 'react-router-dom'
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 //import './static/css/style.css'
 function App() {
@@ -17,10 +19,26 @@ function App() {
   const [nombre, setNombre] = useState("");
   const [accion, setAccion] = useState("");
   const inputRef = useRef(null);
-  
+
   useEffect(() => {
     console.log("Obtenemos lista de usuarios");
-    setUsuarios(obtenerUsuarios());
+    //setUsuarios(obtenerUsuarios());
+    const cargarUsuariosAPI = async () => {
+      try {
+        //Llamada a la api para obtener los usuarios
+        const respuesta = await fetch(`https://api.escuelajs.co/api/v1/users`);
+        if (respuesta.ok) {
+          const data = await respuesta.json();
+          console.log('Usuarios obtenidos de la API:', data);
+          setUsuarios(data);
+        }
+      } catch (error) {
+        console.error('Error al conectar con la API:', error);
+      }
+    }
+
+    cargarUsuariosAPI();
+
     if (inputRef.current === null) {
       setAccion("");
     }
@@ -50,16 +68,30 @@ function App() {
     inputRef.current = "buscar"
   }
 
-  const agregarUsuario = (nombre, fechaNacimiento) => {    
-    const nuevoUsuario = {
-      id: Date.now(),
-      nombre: nombre,
-      fechaNacimiento: fechaNacimiento
-    };
-    agregar(nuevoUsuario);
-    setUsuarios([...usuarios, nuevoUsuario]);
+  const guardar = (usuario) => {
+    console.log(usuario);
+    //Aqui hacer la validaciones  correspondientes    
+    //Llamada a la api para registrar un nuevo usuario y se envia en el body  los datos del mismo
+    fetch('https://api.escuelajs.co/api/v1/users/', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(usuario)
+    }).then(async (res) => {
+      if (!res.ok) {
+        //Si  hay errores de validación en los datos enviados  se muestra por consola los mensajes
+        const dataError = await res.json();
+        console.log(dataError.message);
+        throw new Error(dataError.message);
+      } else {
+        return await res.json();
+      }
+    }).then((data) => {
+      //Se el usuario se registra exitosamente  se redirige  a /
+      window.location.href = '/'
+    }).catch((err) => {
+      console.log(err.message);
+    });
     inputRef.current = "guardar"
-   
   };
 
   return (
@@ -67,11 +99,12 @@ function App() {
       <Header></Header>
       {/* <NavBar></NavBar> */}
       <nav>
-        <Link to="/" style={{marginRight:'1rem'}}>Inicio</Link>
-        <Link to="/crear" style={{marginRight:'1rem'}}>Crear</Link>
+        <Link to="/" style={{ marginRight: '1rem' }}>Inicio</Link>
+        <Link to="/crear" style={{ marginRight: '1rem' }}>Crear</Link>
         <Link to="/ayuda">Ayuda</Link>
       </nav>
       <Routes>
+        <Route path="/login" element={<Login />} >   </Route>
         <Route
           path="/" element={
             <>
@@ -84,15 +117,18 @@ function App() {
           }
         />
         <Route
-          path='/crear' element={<FormUsuario agregarUsuario={agregarUsuario}></FormUsuario>}>
+          path='/crear' element={<FormUsuario guardar={guardar}></FormUsuario>}>
         </Route>
         <Route
           path='/ayuda' element={
-            <h3>Aqui deberia mostrar la ayuda de la appp</h3>
+            //Se envuelve el componente con ProtectedRoute (pagina protegida)
+            <ProtectedRoute>
+              <h3>Aqui deberia mostrar la ayuda de la app</h3>
+            </ProtectedRoute>
           }>
         </Route>
         <Route
-          path="/editar/:id" element={<FormUsuario></FormUsuario>}
+          path="/editar/:id" element={<FormUsuario guardar={guardar}></FormUsuario>}
         />
       </Routes>
 

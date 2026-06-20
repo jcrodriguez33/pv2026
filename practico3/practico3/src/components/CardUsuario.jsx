@@ -7,7 +7,8 @@ const CardUsuario = ({usuario, mostrarFecha}) => {
         <>
          <article className={styles.card}>
             <h3>{usuario.id}</h3>
-            <p>{usuario.nombre}</p>
+            <p>{usuario.name}</p>
+            <p>{usuario.role}</p>
             <button className={styles.boton} onClick={() => mostrarFecha(usuario)} title="Mostrar Fecha Nacimiento" >
             🔎
             </button>
